@@ -35,9 +35,3 @@ A comprehensive, interactive HTML5.3+ study dashboard for SOC analysts and CompT
 
 ---
 
-## 🛠️ **How to Use**
-
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/zech12and8/soc-remote.git
-   cd soc-remote
