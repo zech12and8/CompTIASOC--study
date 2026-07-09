@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOC.sheet — CompTIA Security+ Study Dashboard</title>
+    <style>
+        /* ===== COMPTIA 2026 COLOR SCHEME ===== */
+        :root {
+            --comp-navy: #0a1a2f;
+            --comp-dark: #0d2b45;
+            --comp-cyan: #00b4d8;
+            --comp-light-cyan: #90e0ef;
+            --comp-green: #00e676;
+            --comp-light-green: #b9f6ca;
+            --comp-accent: #ff6b35;
+            --comp-white: #f0f8ff;
+            --comp-gray: #8899aa;
+            --comp-card: rgba(13, 43, 69, 0.85);
+            --comp-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --comp-border: rgba(0, 180, 216, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--comp-navy);
+            color: var(--comp-white);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(0, 180, 216, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, rgba(0, 230, 118, 0.06) 0%, transparent 50%);
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--comp-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--comp-cyan);
+            border-radius: 4px;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px 0 12px 0;
+            border-bottom: 2px solid var(--comp-cyan);
+            margin-bottom: 28px;
+        }
+
+        .header-left h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--comp-cyan), var(--comp-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header-left .sub {
+            font-size: 0.95rem;
+            color: var(--comp-gray);
+            -webkit-text-fill-color: var(--comp-gray);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-right a {
+            color: var(--comp-light-cyan);
+            text-decoration: none;
+            padding: 6px 14px;
+            border: 1px solid var(--comp-border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            transition: 0.3s ease;
+        }
+
+        .header-right a:hover {
+            background: var(--comp-cyan);
+            color: var(--comp-navy);
+            border-color: var(--comp-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 180, 216, 0.3);
+        }
+
+        .btc-badge {
+            background: #f7931a20;
+            border: 1px solid #f7931a60;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: #f7931a;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ===== CORE PRINCIPLE BANNER ===== */
+        .banner {
+            background: linear-gradient(135deg, var(--comp-dark), #0a2a3f);
+            border-left: 6px solid var(--comp-accent);
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--comp-shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .banner .principle {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--comp-light-cyan);
+        }
+
+        .banner .principle span {
+            color: var(--comp-accent);
+            font-weight: 700;
+        }
+
+        .banner .tag {
+            background: var(--comp-accent);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ===== GRID SYSTEM ===== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--comp-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--comp-border);
+            border-radius: 16px;
+            padding: 22px 24px;
+            box-shadow: var(--comp-shadow);
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--comp-cyan);
+            box-shadow: 0 8px 40px rgba(0, 180, 216, 0.15);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            color: var(--comp-cyan);
+            border-bottom: 1px solid var(--comp-border);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            color: var(--comp-light-green);
+            font-size: 1rem;
+            margin: 16px 0 8px 0;
+        }
+
+        .card h4 {
+            color: var(--comp-light-cyan);
+            font-size: 0.9rem;
+            margin: 12px 0 4px 0;
+        }
+
+        /* ===== PRIORITY MATRIX ===== */
+        .priority-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .priority-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .priority-item .sev {
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-item .alert {
+            font-weight: 600;
+        }
+
+        .priority-item .why {
+            font-size: 0.85rem;
+            color: var(--comp-gray);
+        }
+
+        .sev-critical {
+            border-left-color: #ff1744;
+            color: #ff1744;
+        }
+        .sev-high {
+            border-left-color: #ff9100;
+            color: #ff9100;
+        }
+        .sev-medium {
+            border-left-color: #ffea00;
+            color: #ffea00;
+        }
+        .sev-low {
+            border-left-color: #00e676;
+            color: #00e676;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        table th {
+            background: var(--comp-cyan);
+            color: var(--comp-navy);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        table tr:hover td {
+            background: rgba(0, 180, 216, 0.08);
+        }
+
+        .code-block {
+            background: #0a0f18;
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            overflow-x: auto;
+            border: 1px solid #1a2a3f;
+            margin: 10px 0;
+            color: #d4e6f0;
+        }
+
+        .code-block .comment {
+            color: #546e7a;
+        }
+        .code-block .cmd {
+            color: var(--comp-light-cyan);
+        }
+        .code-block .out {
+            color: var(--comp-light-green);
+        }
+
+        /* ===== CLI PRACTICE TERMINAL ===== */
+        .terminal {
+            background: #0a0f18;
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid #1a2a3f;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin: 12px 0;
+        }
+
+        .terminal .line {
+            display: flex;
+            gap: 10px;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .terminal .prompt {
+            color: var(--comp-green);
+            font-weight: 600;
+        }
+
+        .terminal .input {
+            color: var(--comp-white);
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .terminal .output {
+            color: var(--comp-light-cyan);
+            padding: 4px 0 4px 24px;
+        }
+
+        .terminal .output.error {
+            color: #ff6b6b;
+        }
+
+        /* ===== ATTACK PATTERN CARDS ===== */
+        .pattern-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--comp-cyan);
+        }
+
+        .pattern-card .name {
+            font-weight: 700;
+            color: var(--comp-light-cyan);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pattern-card .cat {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            background: var(--comp-dark);
+            padding: 2px 12px;
+            border-radius: 12px;
+            color: var(--comp-gray);
+        }
+
+        .pattern-card .sig {
+            font-size: 0.85rem;
+            color: var(--comp-gray);
+        }
+
+        .pattern-card .det {
+            font-size: 0.85rem;
+            color: var(--comp-light-green);
+        }
+
+        .pattern-card .def {
+            font-size: 0.85rem;
+            color: var(--comp-light-cyan);
+        }
+
+        /* ===== QUIZ ===== */
+        .quiz-option {
+            display: block;
+            padding: 12px 16px;
+            margin: 6px 0;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            background: rgba(0, 180, 216, 0.12);
+            border-color: var(--comp-border);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--comp-green);
+            background: rgba(0, 230, 118, 0.15);
+        }
+
+        .quiz-option.wrong {
+            border-color: #ff1744;
+            background: rgba(255, 23, 68, 0.15);
+        }
+
+        .quiz-feedback {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .quiz-feedback.pass {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--comp-green);
+        }
+
+        .quiz-feedback.fail {
+            background: rgba(255, 23, 68, 0.15);
+            color: #ff6b6b;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 40px;
+            padding: 30px 0 20px 0;
+            border-top: 1px solid var(--comp-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--comp-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--comp-cyan);
+            text-decoration: underline;
+        }
+
+        .footer .donate {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer .donate .btc {
+            background: #f7931a20;
+            padding: 4px 14px;
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #f7931a;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .header-left h1 {
+                font-size: 1.6rem;
+            }
+            .priority-grid {
+                grid-template-columns: 1fr;
+            }
+            .banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .card {
+                padding: 16px;
+            }
+        }
+
+        /* ===== TOGGLE / DETAILS ===== */
+        details {
+            margin: 8px 0;
+        }
+
+        details summary {
+            cursor: pointer;
+            color: var(--comp-light-cyan);
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        details summary:hover {
+            color: var(--comp-cyan);
+        }
+
+        details .content {
+            padding: 8px 0 8px 20px;
+            border-left: 2px solid var(--comp-border);
+        }
+
+        /* ===== BADGE PILLS ===== */
+        .pill {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .pill-critical {
+            background: #ff174430;
+            color: #ff1744;
+        }
+        .pill-high {
+            background: #ff910030;
+            color: #ff9100;
+        }
+        .pill-medium {
+            background: #ffea0030;
+            color: #ffea00;
+        }
+        .pill-low {
+            background: #00e67630;
+            color: #00e676;
+        }
+
+        /* ===== INSTALL SECTION ===== */
+        .install-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .install-tabs button {
+            background: var(--comp-dark);
+            border: 1px solid var(--comp-border);
+            color: var(--comp-gray);
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s ease;
+        }
+
+        .install-tabs button.active {
+            background: var(--comp-cyan);
+            color: var(--comp-navy);
+            border-color: var(--comp-cyan);
+        }
+
+        .install-tabs button:hover {
+            background: var(--comp-cyan);
+            color: var(--comp-navy);
+        }
+
+        .install-content {
+            display: none;
+        }
+
+        .install-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="header-left">
+                <h1>🧠 SOC.sheet</h1>
+                <div class="sub">CompTIA Security+ / SOC Analyst Study Dashboard · v2.0</div>
+            </div>
+            <div class="header-right">
+                <a href="https://poolersoccs.blogspot.com/" target="_blank" title="Danovis' IT Blog">📝 Blog</a>
+                <a href="https://github.com/zech12and8" target="_blank" title="GitHub Repos">🐙 GitHub</a>
+                <a href="https://www.comptia.org/" target="_blank" title="CompTIA Official">🔗 CompTIA</a>
+                <span class="btc-badge">₿ 12Um8sPvrFE3hLQ4ERTiK3xtX4XmrcrLpv</span>
+            </div>
+        </header>
+
+        <!-- ===== BANNER ===== -->
+        <div class="banner">
+            <div class="principle">
+                ⚡ <span>Active destruction</span> beats potential destruction — always.
+            </div>
+            <span class="tag">Core Principle</span>
+            <span style="font-size:0.85rem;color:var(--comp-gray);margin-left:auto;">
+                📍 Oakland, CA · 20+ Years IT
+            </span>
+        </div>
+
+        <!-- ===== GRID: ALERT PRIORITY + IR ===== -->
+        <div class="grid-2">
+
+            <!-- ALERT PRIORITY MATRIX -->
+            <section class="card">
+                <h2>🚨 Alert Priority Matrix</h2>
+                <p style="color:var(--comp-gray);margin-bottom:14px;font-size:0.9rem;">
+                    <span style="color:var(--comp-accent);">Active destruction</span> always comes first.
+                </p>
+
+                <div class="priority-grid">
+                    <div class="priority-item">
+                        <div class="sev sev-critical">CRITICAL</div>
+                        <div class="alert">Ransomware encrypting files</div>
+                        <div class="why">Active encryption in progress — stop NOW</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-critical">CRITICAL</div>
+                        <div class="alert">Outbound Port 4444 beaconing</div>
+                        <div class="why">Reverse shell / C2 confirmed</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-critical">CRITICAL</div>
+                        <div class="alert">PowerShell Encoded Command</div>
+                        <div class="why">Fileless malware indicator</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-high">HIGH</div>
+                        <div class="alert">Mimikatz signature detected</div>
+                        <div class="why">Credentials being stolen</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-high">HIGH</div>
+                        <div class="alert">Unusual Admin Login (Type 10)</div>
+                        <div class="why">RDP from external = lateral movement</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-high">HIGH</div>
+                        <div class="alert">Scheduled Task Created (4698)</div>
+                        <div class="why">Persistence mechanism</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-medium">MEDIUM</div>
+                        <div class="alert">New DC Account at 2 AM</div>
+                        <div class="why">Persistence/Priv escalation</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-medium">MEDIUM</div>
+                        <div class="alert">DNS Tunneling detected</div>
+                        <div class="why">Data exfiltration channel</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-low">LOW</div>
+                        <div class="alert">Port Scan detected</div>
+                        <div class="why">Reconnaissance — noisy but low impact</div>
+                    </div>
+                    <div class="priority-item">
+                        <div class="sev sev-low">LOW</div>
+                        <div class="alert">Run Key Modification (Temp)</div>
+                        <div class="why">Malware persistence — but temp = red flag</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INCIDENT RESPONSE ORDER -->
+            <section class="card">
+                <h2>🛡️ Incident Response Order</h2>
+                <div style="background:var(--comp-dark);padding:12px 16px;border-radius:10px;text-align:center;font-size:1.2rem;font-weight:700;letter-spacing:1px;margin-bottom:14px;">
+                    <span style="color:var(--comp-accent);">Containment</span>
+                    <span style="color:var(--comp-gray);"> → </span>
+                    <span style="color:var(--comp-cyan);">Preservation</span>
+                    <span style="color:var(--comp-gray);"> → </span>
+                    <span style="color:var(--comp-light-green);">Eradication</span>
+                    <span style="color:var(--comp-gray);"> → </span>
+                    <span style="color:var(--comp-white);">Recovery</span>
+                </div>
+
+                <div style="background:rgba(255,107,53,0.08);padding:12px 16px;border-radius:8px;border-left:4px solid var(--comp-accent);margin-bottom:14px;">
+                    <strong style="color:var(--comp-accent);">MEMORIZE: C.P.E.R</strong>
+                    <span style="color:var(--comp-gray);"> — Contain first, always</span>
+                </div>
+
+                <h3>🔒 Phase 1: Containment</h3>
+                <ul style="color:var(--comp-gray);padding-left:20px;margin-bottom:12px;">
+                    <li>Disconnect from network</li>
+                    <li>Disable compromised accounts</li>
+                    <li>Block malicious IPs/domains</li>
+                    <li>Segment affected VLANs</li>
+                </ul>
+
+                <h3>💾 Phase 2: Preservation</h3>
+                <ul style="color:var(--comp-gray);padding-left:20px;margin-bottom:12px;">
+                    <li>Capture memory/disk images</li>
+                    <li>Preserve logs (forward to SIEM)</li>
+                    <li>Chain of custody documentation</li>
+                </ul>
+
+                <h3>🧹 Phase 3: Eradication</h3>
+                <ul style="color:var(--comp-gray);padding-left:20px;margin-bottom:12px;">
+                    <li>Remove malware/persistence</li>
+                    <li>Patch vulnerabilities</li>
+                    <li>Reset compromised credentials</li>
+                </ul>
+
+                <h3>🔄 Phase 4: Recovery</h3>
+                <ul style="color:var(--comp-gray);padding-left:20px;">
+                    <li>Restore from clean backups</li>
+                    <li>Monitor for re-infection</li>
+                    <li>Post-incident review</li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- ===== ATTACK PATTERN LIBRARY ===== -->
+        <section class="card" style="margin-top:24px;">
+            <h2>🎯 Attack Pattern Library</h2>
+            <p style="color:var(--comp-gray);margin-bottom:16px;">
+                Know the signature → spot it in logs → stop it in production.
+            </p>
+
+            <div class="grid-3">
+                <!-- Ransomware -->
+                <div class="pattern-card">
+                    <div class="name">💀 Ransomware <span class="cat">Malware</span></div>
+                    <div class="sig"><strong>Signature:</strong> Mass file encryption, .locked/.encrypted, ransom notes</div>
+                    <div class="det"><strong>Detection:</strong> High file mod rate, vssadmin delete</div>
+                    <div class="def"><strong>Defense:</strong> Offline backups, EDR, network segmentation</div>
+                </div>
+
+                <!-- Reverse Shell -->
+                <div class="pattern-card">
+                    <div class="name">🔄 Reverse Shell <span class="cat">C2</span></div>
+                    <div class="sig"><strong>Signature:</strong> Outbound port 4444/8080, regular beaconing</div>
+                    <div class="det"><strong>Detection:</strong> netstat -ano, unusual outbound from server</div>
+                    <div class="def"><strong>Defense:</strong> Egress filtering, IDS signatures</div>
+                </div>
+
+                <!-- Brute-force -->
+                <div class="pattern-card">
+                    <div class="name">🔑 Brute-force <span class="cat">Credential</span></div>
+                    <div class="sig"><strong>Signature:</strong> High volume Event 4625 from same source</div>
+                    <div class="det"><strong>Detection:</strong> &gt;10 failed logons in 60s from single IP</div>
+                    <div class="def"><strong>Defense:</strong> Account lockout, MFA, fail2ban</div>
+                </div>
+
+                <!-- Directory Traversal -->
+                <div class="pattern-card">
+                    <div class="name">📂 Directory Traversal <span class="cat">Web</span></div>
+                    <div class="sig"><strong>Signature:</strong> ../../../etc/passwd, %2e%2e%2f in URL</div>
+                    <div class="det"><strong>Detection:</strong> WAF rules, HTTP 400s with traversal patterns</div>
+                    <div class="def"><strong>Defense:</strong> Input validation, WAF, chroot</div>
+                </div>
+
+                <!-- SQL Injection -->
+                <div class="pattern-card">
+                    <div class="name">🗄️ SQL Injection <span class="cat">Web</span></div>
+                    <div class="sig"><strong>Signature:</strong> ' OR 1=1-- , UNION SELECT, time-based delays</div>
+                    <div class="det"><strong>Detection:</strong> WAF, unusual SQL errors in app logs</div>
+                    <div class="def"><strong>Defense:</strong> Parameterized queries, least privilege DB</div>
+                </div>
+
+                <!-- Pass-the-Hash -->
+                <div class="pattern-card">
+                    <div class="name">🔐 Pass-the-Hash <span class="cat">Lateral</span></div>
+                    <div class="sig"><strong>Signature:</strong> Mimikatz, NTLM hash reuse, Type 3 logons</div>
+                    <div class="det"><strong>Detection:</strong> Event 4624 Type 3 from workstations</div>
+                    <div class="def"><strong>Defense:</strong> Credential Guard, tiered admin model</div>
+                </div>
+
+                <!-- Kerberoasting -->
+                <div class="pattern-card">
+                    <div class="name">👤 Kerberoasting <span class="cat">AD</span></div>
+                    <div class="sig"><strong>Signature:</strong> TGS requests for multiple SPNs, RC4 encryption</div>
+                    <div class="det"><strong>Detection:</strong> Event 4769 with RC4_HMAC (0x17)</div>
+                    <div class="def"><strong>Defense:</strong> Long SPN passwords, AES-only, gMSA</div>
+                </div>
+
+                <!-- Phishing -->
+                <div class="pattern-card">
+                    <div class="name">🎣 Phishing <span class="cat">Social</span></div>
+                    <div class="sig"><strong>Signature:</strong> Lookalike domains, urgent language, malicious attachments</div>
+                    <div class="det"><strong>Detection:</strong> Email gateway, DMARC/SPF/DKIM</div>
+                    <div class="def"><strong>Defense:</strong> User training, MFA, sandboxing</div>
+                </div>
+
+                <!-- DNS Tunneling -->
+                <div class="pattern-card">
+                    <div class="name">🌐 DNS Tunneling <span class="cat">Exfil</span></div>
+                    <div class="sig"><strong>Signature:</strong> Long TXT queries, base64 in subdomains, high query volume</div>
+                    <div class="det"><strong>Detection:</strong> Entropy analysis, DNS request size anomalies</div>
+                    <div class="def"><strong>Defense:</strong> DNS filtering, Sinkhole, Zscaler</div>
+                </div>
+
+                <!-- Living Off The Land -->
+                <div class="pattern-card">
+                    <div class="name">🏔️ Living Off The Land <span class="cat">Malware</span></div>
+                    <div class="sig"><strong>Signature:</strong> powershell.exe, wmic, certutil, bitsadmin abuse</div>
+                    <div class="det"><strong>Detection:</strong> Process tree analysis, AMSI logs</div>
+                    <div class="def"><strong>Defense:</strong> Constrained PowerShell, AppLocker</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== WINDOWS SECURITY REFERENCE + EVENT IDs ===== -->
+        <div class="grid-2" style="margin-top:24px;">
+
+            <section class="card">
+                <h2>🪟 Windows Logon Types</h2>
+                <div class="table-wrap">
+                    <table>
+                        <tr><th>Type</th><th>Description</th><th>Security Note</th></tr>
+                        <tr><td>2</td><td>Interactive</td><td>Console login (physical keyboard)</td></tr>
+                        <tr><td>3</td><td>Network</td><td>SMB share / net use</td></tr>
+                        <tr><td>4</td><td>Batch</td><td>Scheduled task</td></tr>
+                        <tr><td>5</td><td>Service</td><td>Service account startup</td></tr>
+                        <tr><td>7</td><td>Unlock</td><td>Workstation unlock</td></tr>
+                        <tr><td>8</td><td>NetworkCleartext</td><td style="color:#ff6b6b;">⚠️ Credentials in plaintext!</td></tr>
+                        <tr><td>9</td><td>NewCredentials</td><td>RunAs / netonly</td></tr>
+                        <tr><td>10</td><td>RemoteInteractive</td><td style="color:var(--comp-accent);">🔥 RDP — ATTACKER LATERAL MOVEMENT</td></tr>
+                        <tr><td>11</td><td>CachedInteractive</td><td>Cached domain credentials (offline)</td></tr>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>📋 Critical Event IDs</h2>
+                <div class="table-wrap">
+                    <table>
+                        <tr><th>Event ID</th><th>Description</th><th>Why It Matters</th></tr>
+                        <tr><td>4624</td><td>Successful logon</td><td>Check logon type</td></tr>
+                        <tr><td>4625</td><td>Failed logon</td><td>Spike = brute-force</td></tr>
+                        <tr><td>4688</td><td>Process creation</td><td>New process tracking</td></tr>
+                        <tr><td>4698</td><td>Scheduled task created</td><td style="color:var(--comp-accent);">🔥 Persistence mechanism</td></tr>
+                        <tr><td>4720</td><td>User account created</td><td>Especially off-hours!</td></tr>
+                        <tr><td>4732</td><td>User added to admin group</td><td>Privilege escalation</td></tr>
+                        <tr><td>7045</td><td>New service installed</td><td>Persistence/backdoor</td></tr>
+                        <tr><td>1102</td><td>Audit log cleared</td><td style="color:#ff1744;">🚨 ATTACKER COVERING TRACKS</td></tr>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== PERSISTENCE + CLI INSTALLATIONS ===== -->
+        <div class="grid-2" style="margin-top:24px;">
+
+            <section class="card">
+                <h2>🔗 Common Persistence Mechanisms</h2>
+                <ul style="color:var(--comp-gray);padding-left:20px;">
+                    <li><strong>Run / RunOnce</strong> — Registry: <code style="color:var(--comp-light-cyan);">HKLM\Software\Microsoft\Windows\CurrentVersion\Run</code></li>
+                    <li><strong>Scheduled Tasks</strong> — Event ID 4698</li>
+                    <li><strong>Services</strong> — Event ID 7045</li>
+                    <li><strong>WMI Event Subscription</strong> — EventFilter / EventConsumer</li>
+                    <li><strong>Startup Folder</strong> — <code style="color:var(--comp-light-cyan);">%AppData%\Microsoft\Windows\Start Menu\Programs\Startup</code></li>
+                    <li><strong>Boot/Logon Scripts</strong> — GPO or local</li>
+                    <li><strong>DLL Hijacking</strong> — Search order exploitation</li>
+                    <li><strong>AppInit_DLLs</strong> — Registry: <code style="color:var(--comp-light-cyan);">HKLM\Software\Microsoft\Windows NT\CurrentVersion\Windows</code></li>
+                </ul>
+                <details>
+                    <summary>🔍 WMI Persistence Example</summary>
+                    <div class="content">
+                        <div class="code-block">
+                            <span class="comment"># Attacker creates a WMI filter that triggers on startup</span><br>
+                            <span class="cmd">wmic</span> /NAMESPACE:"\\root\subscription" PATH __EventFilter CREATE Name="MaliciousFilter", EventNameSpace="root\cimv2", QueryLanguage="WQL", Query="SELECT * FROM __InstanceCreationEvent WHERE TargetInstance ISA 'Win32_Process' AND TargetInstance.Name='explorer.exe'"<br>
+                            <span class="comment"># Then binds to a consumer (e.g., ActiveScriptEventConsumer) to run code</span>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- CLI INSTALLATIONS -->
+            <section class="card">
+                <h2>🐧 CLI Tools — Install for All Linux</h2>
+                <p style="color:var(--comp-gray);font-size:0.9rem;margin-bottom:12px;">
+                    Essential SOC tools — pick your distro.
+                </p>
+
+                <div class="install-tabs">
+                    <button class="active" data-distro="ubuntu">Ubuntu/Debian</button>
+                    <button data-distro="rhel">RHEL/CentOS/Fedora</button>
+                    <button data-distro="arch">Arch/Manjaro</button>
+                    <button data-distro="alpine">Alpine</button>
+                </div>
+
+                <!-- Ubuntu/Debian -->
+                <div id="distro-ubuntu" class="install-content active">
+                    <div class="code-block">
+                        <span class="comment"># Update and install core SOC tools</span><br>
+                        <span class="cmd">sudo apt update &amp;&amp; sudo apt upgrade -y</span><br>
+                        <span class="cmd">sudo apt install -y wireshark tcpdump nmap zeek suricata</span><br>
+                        <span class="cmd">sudo apt install -y elasticsearch kibana logstash</span><br>
+                        <span class="cmd">sudo apt install -y metasploit-framework burpsuite</span><br>
+                        <span class="cmd">sudo apt install -y python3-pip git vim tmux</span><br>
+                        <span class="out">✅ Tools installed successfully</span>
+                    </div>
+                    <div class="code-block">
+                        <span class="comment"># Add user to wireshark group</span><br>
+                        <span class="cmd">sudo usermod -aG wireshark $USER</span><br>
+                        <span class="cmd">sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span><br>
+                        <span class="out">✅ Permissions configured — reboot or logout to apply</span>
+                    </div>
+                </div>
+
+                <!-- RHEL -->
+                <div id="distro-rhel" class="install-content">
+                    <div class="code-block">
+                        <span class="comment"># Enable EPEL and install tools</span><br>
+                        <span class="cmd">sudo dnf install epel-release -y</span><br>
+                        <span class="cmd">sudo dnf install -y wireshark nmap tcpdump</span><br>
+                        <span class="cmd">sudo dnf install -y suricata zeek</span><br>
+                        <span class="cmd">sudo dnf install -y elasticsearch kibana logstash</span><br>
+                        <span class="cmd">sudo dnf install -y git vim tmux python3-pip</span><br>
+                        <span class="out">✅ RHEL tools installed</span>
+                    </div>
+                    <div class="code-block">
+                        <span class="comment"># SELinux context for packet capture</span><br>
+                        <span class="cmd">sudo setsebool -P allow_sys_ptrace on</span><br>
+                        <span class="cmd">sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span>
+                    </div>
+                </div>
+
+                <!-- Arch -->
+                <div id="distro-arch" class="install-content">
+                    <div class="code-block">
+                        <span class="comment"># Arch Linux — pacman</span><br>
+                        <span class="cmd">sudo pacman -Syu --noconfirm</span><br>
+                        <span class="cmd">sudo pacman -S --noconfirm wireshark-qt nmap tcpdump</span><br>
+                        <span class="cmd">sudo pacman -S --noconfirm suricata zeek</span><br>
+                        <span class="cmd">sudo pacman -S --noconfirm elasticsearch kibana logstash</span><br>
+                        <span class="cmd">sudo pacman -S --noconfirm git vim tmux python-pip</span><br>
+                        <span class="out">✅ Arch tools installed</span>
+                    </div>
+                    <div class="code-block">
+                        <span class="comment"># Add user to wireshark group (Arch)</span><br>
+                        <span class="cmd">sudo usermod -aG wireshark $USER</span><br>
+                        <span class="cmd">sudo setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span>
+                    </div>
+                </div>
+
+                <!-- Alpine -->
+                <div id="distro-alpine" class="install-content">
+                    <div class="code-block">
+                        <span class="comment"># Alpine — apk (lightweight containers)</span><br>
+                        <span class="cmd">apk update &amp;&amp; apk upgrade</span><br>
+                        <span class="cmd">apk add wireshark tcpdump nmap</span><br>
+                        <span class="cmd">apk add suricata zeek</span><br>
+                        <span class="cmd">apk add git vim tmux python3 py3-pip</span><br>
+                        <span class="out">✅ Alpine tools installed</span>
+                    </div>
+                    <div class="code-block">
+                        <span class="comment"># Alpine uses busybox — minimal but functional</span><br>
+                        <span class="cmd">apk add libcap</span><br>
+                        <span class="cmd">setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== CLI-GUI PRACTICE TERMINAL ===== -->
+        <section class="card" style="margin-top:24px;">
+            <h2>⌨️ CLI Practice Terminal — SOC Commands</h2>
+            <p style="color:var(--comp-gray);margin-bottom:10px;">
+                Try these commands in your lab. Click to copy.
+            </p>
+
+            <div class="terminal">
+                <div class="line">
+                    <span class="prompt">$</span>
+                    <span class="cmd" onclick="navigator.clipboard?.writeText('netstat -tulpn | grep LISTEN')" style="cursor:pointer;">netstat -tulpn | grep LISTEN</span>
+                    <span style="color:var(--comp-gray);font-size:0.7rem;">📋 click to copy</span>
+                </div>
+                <div class="output">tcp   0   0 0.0.0.0:22   0.0.0.0:*   LISTEN   1234/sshd</div>
+                <div class="output">tcp   0   0 0.0.0.0:443  0.0.0.0:*   LISTEN   5678/nginx</div>
+
+                <div class="line" style="margin-top:10px;">
+                    <span class="prompt">$</span>
+                    <span class="cmd" onclick="navigator.clipboard?.writeText('sudo tcpdump -i any -n -c 10')" style="cursor:pointer;">sudo tcpdump -i any -n -c 10</span>
+                    <span style="color:var(--comp-gray);font-size:0.7rem;">📋 click to copy</span>
+                </div>
+                <div class="output">tcpdump: verbose output suppressed, use -v</div>
+                <div class="output">listening on any, link-type LINUX_SLL2 (Linux cooked v2)</div>
+
+                <div class="line" style="margin-top:10px;">
+                    <span class="prompt">$</span>
+                    <span class="cmd" onclick="navigator.clipboard?.writeText('nmap -sS -T4 192.168.1.0/24')" style="cursor:pointer;">nmap -sS -T4 192.168.1.0/24</span>
+                    <span style="color:var(--comp-gray);font-size:0.7rem;">📋 click to copy</span>
+                </div>
+                <div class="output">Starting Nmap 7.98 ( https://nmap.org )</div>
+                <div class="output">Interesting ports on 192.168.1.1:</div>
+                <div class="output">80/tcp   open  http    (Apache)</div>
+                <div class="output">443/tcp  open  https   (nginx)</div>
+
+                <div class="line" style="margin-top:10px;">
+                    <span class="prompt">$</span>
+                    <span class="cmd" onclick="navigator.clipboard?.writeText('tail -f /var/log/syslog | grep -i error')" style="cursor:pointer;">tail -f /var/log/syslog | grep -i error</span>
+                    <span style="color:var(--comp-gray);font-size:0.7rem;">📋 click to copy</span>
+                </div>
+                <div class="output">Apr 21 22:15:01 host kernel: [12345.67] CPU: 0 PID: 1234: segmentation fault</div>
+                <div class="output error">Apr 21 22:16:02 host sshd[4567]: Failed password for root from 10.0.2.15</div>
+            </div>
+        </section>
+
+        <!-- ===== QUIZ ===== -->
+        <section class="card" style="margin-top:24px;">
+            <h2>📝 Test Your Knowledge</h2>
+            <div id="quiz-container">
+                <div id="quiz-question">
+                    <p style="font-size:1.05rem;font-weight:600;color:var(--comp-light-cyan);">
+                        Four alerts hit simultaneously. Which do you investigate FIRST?
+                    </p>
+                    <div class="quiz-option" data-correct="false" onclick="checkQuiz(this, false)">
+                        Brute-force attack on a Finance workstation
+                    </div>
+                    <div class="quiz-option" data-correct="true" onclick="checkQuiz(this, true)">
+                        Ransomware actively encrypting a file server
+                    </div>
+                    <div class="quiz-option" data-correct="false" onclick="checkQuiz(this, false)">
+                        New Domain Controller account created at 2 AM
+                    </div>
+                    <div class="quiz-option" data-correct="false" onclick="checkQuiz(this, false)">
+                        Web server directory traversal attempt
+                    </div>
+                </div>
+                <div id="quiz-feedback" class="quiz-feedback" style="display:none;"></div>
+                <button onclick="resetQuiz()" style="margin-top:12px;background:var(--comp-dark);border:1px solid var(--comp-border);color:var(--comp-white);padding:8px 24px;border-radius:8px;cursor:pointer;">🔄 Reset Quiz</button>
+            </div>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://www.comptia.org/" target="_blank">🔗 CompTIA.org</a>
+                <a href="https://poolersoccs.blogspot.com/" target="_blank">📝 Danovis' SOC Blog</a>
+                <a href="https://github.com/zech12and8" target="_blank">🐙 GitHub: zech12and8</a>
+                <a href="https://tryhackme.com/" target="_blank">🛡️ TryHackMe SOC Path</a>
+                <a href="https://attack.mitre.org/" target="_blank">🎯 MITRE ATT&CK</a>
+            </div>
+            <div class="donate">
+                <span style="color:var(--comp-gray);font-size:0.85rem;">☕ Support the lab:</span>
+                <span class="btc">₿ 12Um8sPvrFE3hLQ4ERTiK3xtX4XmrcrLpv</span>
+                <a href="https://www.paypal.com/paypalme/DPoolerJr" target="_blank" style="background:#003087;color:#fff;padding:4px 16px;border-radius:20px;text-decoration:none;font-size:0.8rem;">PayPal</a>
+            </div>
+            <div style="width:100%;text-align:center;color:var(--comp-gray);font-size:0.75rem;border-top:1px solid var(--comp-border);padding-top:16px;margin-top:10px;">
+                © 2026 SOC.sheet — Built with ❤️ for Danovis Pooler Jr. · Oakland, CA · Study hard, defend harder.
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== INSTALL TABS =====
+        document.querySelectorAll('.install-tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.install-tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const distro = this.dataset.distro;
+                document.querySelectorAll('.install-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('distro-' + distro).classList.add('active');
+            });
+        });
+
+        // ===== QUIZ =====
+        let quizAnswered = false;
+
+        function checkQuiz(el, isCorrect) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.cursor = 'default';
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                } else if (opt === el && !isCorrect) {
+                    opt.classList.add('wrong');
+                }
+            });
+            const fb = document.getElementById('quiz-feedback');
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.className = 'quiz-feedback pass';
+                fb.innerHTML = '✅ Correct! Active destruction (ransomware) beats potential destruction. Always prioritize what\'s causing damage RIGHT NOW.';
+            } else {
+                fb.className = 'quiz-feedback fail';
+                fb.innerHTML = '❌ Not quite. Remember: <strong style="color:var(--comp-accent);">Active destruction beats potential destruction.</strong> Ransomware encrypting files is an active incident — stop it first.';
+            }
+        }
+
+        function resetQuiz() {
+            quizAnswered = false;
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.style.cursor = 'pointer';
+            });
+            const fb = document.getElementById('quiz-feedback');
+            fb.style.display = 'none';
+            fb.className = 'quiz-feedback';
+        }
+
+        // ===== KEYBOARD SHORTCUT: Reset Quiz with 'R' =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') {
+                if (document.activeElement?.tagName !== 'INPUT') resetQuiz();
+            }
+        });
+    </script>
+
+</body>
+</html>
